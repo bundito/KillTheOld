@@ -1,9 +1,14 @@
-import KillTheOld
+import KillTheOld as KTO
 
-dirs = KillTheOld.checkDirs()
+isoFiles = KTO.checkFiles()
+
+print(isoFiles)
+
+
+dirs = KTO.checkDirs()
 
 print(dirs)
 
-files = KillTheOld.checkArchives()
+arcs = KTO.checkArchives()
 
-print(files)
+print(arcs)

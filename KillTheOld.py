@@ -2,7 +2,7 @@
 import os
 from os import stat
 import time
-import moment
+import arrow
 
 BASEDIR = r'C:\Users\bundi\Downloads\\'
 
@@ -10,7 +10,7 @@ isoFiles = []
 isoDirs = []
 archFiles = []
 imgFormats = {".iso", ".bin"}
-arcFormats = {".rar", ".zip", ".7z", ".gz"}
+arcFormats = {".rar", ".zip", ".7z", ".gz", ".nzb", ".exe"}
 returnItems = []
 
 def dateCheck(item, suns=7):
@@ -21,25 +21,24 @@ def dateCheck(item, suns=7):
     # make moments
     itemSafe = False
 
-    itemMoment = moment.unix(itemTime)
-    nowMoment = moment.now()
+    itemArrow = arrow.get(itemTime)
+    nowArrow = arrow.now()
 
-    agedSeven = itemMoment.add(days=3   )
+    agedSeven = itemArrow.shift(days=+suns)
 
-    if agedSeven < nowMoment:
+    if agedSeven <= nowArrow:
         itemSafe = True
+    return itemSafe
 
-
-
-
-
+'''
     print("item: ", item)
-    print("atime: ", itemMoment)
+    print("atime: ", itemArrow)
     print("aged: ", agedSeven)
     print("+7: ", itemSafe)
     print("-----------------")
 
-    return itemSafe
+'''
+
 # Clean out old disc image files left over from decompression
 
 # Start at top level of directory
@@ -48,7 +47,7 @@ def checkFiles():
     for thisFile in filesOnly:
         if os.path.isfile(thisFile):
             if os.path.splitext(thisFile)[1] in imgFormats:
-                if dateCheck(thisFile,3) is not True:
+                if dateCheck(thisFile,3):
                     isoFiles.append(thisFile)
                 break
     return isoFiles
@@ -61,7 +60,7 @@ def checkDirs():
         if os.path.isdir(searchDir):
             for seekFile in os.listdir(searchDir):
                 if os.path.splitext(seekFile)[1] in imgFormats:
-                    if dateCheck(searchDir, 7):
+                    if dateCheck(searchDir, 3):
                         isoDirs.append(searchDir)
                     break
     return isoDirs
@@ -72,6 +71,7 @@ def checkArchives():
     for thisFile in filesOnly:
         if os.path.isfile(thisFile):
             if os.path.splitext(thisFile)[1] in arcFormats:
-                if dateCheck(thisFile, 7):
+                if dateCheck(thisFile):
                     archFiles.append(thisFile)
     return archFiles
+
